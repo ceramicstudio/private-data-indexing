@@ -1,6 +1,8 @@
-# Private Data Playground
+# Private Data Playground with Indexing
 
 This demo application uses a minimal webapp to demonstrate how Ceramic can facilitate the sharing of private data between two users. In this iteration, the demo only implements access control on the Ceramic-One data feed API, showing how data can only be read if the controlling user grants the user who desires access a capability. Both users share the same node, but can only access each others data if explicitly granted that capability.
+
+As an add-on, this version also shows how those capabilities can be saved to Ceramic via OrbisDB, and programmatically queried if a matching authorized account has relevant capabilities they can access from other accounts.
 
 ## Getting Started
 
