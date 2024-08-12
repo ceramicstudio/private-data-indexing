@@ -7,18 +7,19 @@ import { TopMenu } from "@/components/top-menu";
 import { DisplayWhen } from "@/components/display-when";
 import { WriteSubpage } from "@/components/write-subpage";
 import { ReadSubpage } from "@/components/read-subpage";
-import { useSession } from "@/components/session";
+import { useCeramicSession } from "@/components/session";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useSignal } from "@preact/signals-react";
 import { WriteSubpageState } from "@/components/write-subpage.state";
 import { ReadSubpageState } from "@/components/read-subpage.state";
+import { SpotifyAuth } from "@/components/spotify-auth";
 
 const ENV_DISPLAY_ENDPOINT = true;
 const DEFAULT_ENDPOINT = "http://localhost:5101";
 
 export default function Home() {
   useSignals();
-  const session = useSession();
+  const session = useCeramicSession();
   const endpoint = useSignal(DEFAULT_ENDPOINT);
   const subpage = useSubpage();
 
@@ -34,6 +35,9 @@ export default function Home() {
       <DisplayWhen isTrue={session.isLoggedIn}>
         <TopMenu set={subpage.set} />
       </DisplayWhen>
+      <DisplayWhen isTrue={subpage.value === SUBPAGE.WRITE}>
+        <SpotifyAuth />
+      </DisplayWhen>
       <div className="border-border ">
         <main className="container mx-auto">
           <DisplayWhen isTrue={session.isLoggedIn}>
@@ -47,7 +51,11 @@ export default function Home() {
             <DisplayWhen isTrue={subpage.value === SUBPAGE.WRITE}>
               <WriteSubpage
                 stateFactory={() =>
-                  new WriteSubpageState(session.didSession, endpoint.value)
+                  new WriteSubpageState(
+                    session.didSession,
+                    endpoint.value,
+                    session.orbis,
+                  )
                 }
               />
             </DisplayWhen>
@@ -57,6 +65,7 @@ export default function Home() {
                   return new ReadSubpageState(
                     session.didSession,
                     endpoint.value,
+                    session.orbis,
                   );
                 }}
               />

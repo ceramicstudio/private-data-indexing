@@ -1,5 +1,5 @@
 {
-  "name": "private-data-playground",
+  "name": "private-data-koodoos-poc",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,6 +17,8 @@
     "@ipld/dag-json": "^10.2.1",
     "@material-tailwind/react": "^2.1.9",
     "@preact/signals-react": "^2.1.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
@@ -46,6 +48,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@scure/base": "^1.1.7",
     "@t3-oss/env-nextjs": "^0.9.2",
+    "@useorbis/db-sdk": "^0.0.52-alpha",
     "cartonne": "^3.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

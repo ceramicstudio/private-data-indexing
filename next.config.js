@@ -49,7 +49,7 @@ const config = {
   //   locales: ["en"],
   //   defaultLocale: "en",
   // },
-  output: "export",
+  // output: "export",
   webpack: (config, options) => {
     patchWasmModuleImport(config, options.isServer);
     return config;

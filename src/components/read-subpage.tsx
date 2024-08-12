@@ -22,6 +22,8 @@ export function ReadSubpage(props: { stateFactory: () => ReadSubpageState }) {
   // FIXME Temporary value
   // const capability = useSignal("OqJlcm9vdHOB2CpYJQABcRIgyZiI46RfbwqfjZJ2dwrOXIyUr8SIpiGKJY3jIvbXNe1ndmVyc2lvbgHZBAFxEiB4EBYrdOwSXNdxcWhNNwWZFEYG-O4Z0HO2yI0e0b1e16NhaKFhdGdlaXA0MzYxYXCpY2F1ZHg5ZGlkOmtleTp6RG5hZWl6dGZCajJuZU5qQzJ6U0NIcW1RdEFQVnMxOGNyTnpQNFd6SnRDVVBXNFA1Y2V4cHgYMjAyNC0wNy0xNVQwNzo1OTozNC4xMDZaY2lhdHgYMjAyNC0wNy0wOFQwNzo1OTozNC4xMDZaY2lzc3g9ZGlkOnBraDplaXAxNTU6MTM3OjB4NDM5ZTY2ZGI1Yjg1YjA2NWI5NjJkYjBiM2IyMWU2MDc2NzRjMWQwYmVub25jZWpZV05jRzgzSlo3ZmRvbWFpbmlsb2NhbGhvc3RndmVyc2lvbmExaXJlc291cmNlc4F4UWNlcmFtaWM6Ly8qP21vZGVsPWtqemw2aHZmcmJ3NmNhZHljaTVsdnNmZjRqeGwxaWRmZnJwMmxkM2kwazF6bnowYjNrNjdhYmttdGY3cDdxM2lzdGF0ZW1lbnR4PEdpdmUgdGhpcyBhcHBsaWNhdGlvbiBhY2Nlc3MgdG8gc29tZSBvZiB5b3VyIGRhdGEgb24gQ2VyYW1pY2FzomFzeIQweGY5YjY4ZDRmM2EwZDA3ZGExOWM2ZGZjNDMwOWE0N2JhNTZkOTBkZWNkMjUyNmRhNzhiZmVhYzgzNjkxMWQzMDE1YWYyMGExZjAxMGFlZmJhMDZkNjU3YWQ3ZjJjOWRhMGNhYWYyZTZiODRmODExNTQ3OTU3ZGZkYmIwZjFmZmQzMWNhdGZlaXAxOTGbCAFxEiDJmIjjpF9vCp-NknZ3Cs5cjJSvxIimIYoljeMi9tc17aNhaKFhdGdjYWlwMTIyYXCpY2F1ZGlkZWxlZ2F0ZWVjZXhweB1XZWQsIDA3IEF1ZyAyMDI0IDE0OjIwOjIzIEdNVGNpYXR4GDIwMjQtMDctMDhUMDc6NTk6MzQuMTA2WmNpc3N4OWRpZDprZXk6ekRuYWVpenRmQmoybmVOakMyelNDSHFtUXRBUFZzMThjck56UDRXekp0Q1VQVzRQNWVub25jZWpZV05jRzgzSlo3ZmRvbWFpbmlsb2NhbGhvc3RndmVyc2lvbmExaXJlc291cmNlc4N4UWNlcmFtaWM6Ly8qP21vZGVsPWtqemw2aHZmcmJ3NmNhZHljaTVsdnNmZjRqeGwxaWRmZnJwMmxkM2kwazF6bnowYjNrNjdhYmttdGY3cDdxM3hAcHJldjpiYWZ5cmVpZHljYWxjdzVobWNqb25vNGxybmJndG9ibXpjcmRhbjZob2RoaWhobndpcnVwbmRwazYyNHkBGGJpc2N1aXQ6THk4Z2JtOGdjbTl2ZENCclpYa2dhV1FnYzJWMENuVnpaWElvSW1SbGJHVm5ZWFJsWlNJcE93cHlhV2RvZENnaVpHVnNaV2RoZEdWbElpd2dJbU5sY21GdGFXTTZMeThxUDIxdlpHVnNQV3RxZW13MmFIWm1jbUozTm1OaFpIbGphVFZzZG5ObVpqUnFlR3d4YVdSbVpuSndNbXhrTTJrd2F6RjZibm93WWpOck5qZGhZbXR0ZEdZM2NEZHhNeUlwT3dwamFHVmpheUJwWmlCMGFXMWxLQ1IwYVcxbEtTd2dKSFJwYldVZ1BDQWlNakF5TkMwd09DMHdOMVF4TkRveU1Eb3lNeTR5TlRKYUlqc0tpc3RhdGVtZW50eDxHaXZlIHRoaXMgYXBwbGljYXRpb24gYWNjZXNzIHRvIHNvbWUgb2YgeW91ciBkYXRhIG9uIENlcmFtaWNhc6NhbaNjYWxnZUVTMjU2Y2NhcHhCaXBmczovL2JhZnlyZWlkeWNhbGN3NWhtY2pvbm80bHJuYmd0b2JtemNyZGFuNmhvZGhpaGhud2lydXBuZHBrNjI0Y2tpZHhrZGlkOmtleTp6RG5hZWl6dGZCajJuZU5qQzJ6U0NIcW1RdEFQVnMxOGNyTnpQNFd6SnRDVVBXNFA1I3pEbmFlaXp0ZkJqMm5lTmpDMnpTQ0hxbVF0QVBWczE4Y3JOelA0V3pKdENVUFc0UDVhc3hWbmM0TUNkbHNXTUpJcl9id0h0Q29GUUh3NFFvWVB3TlFrRDI5ajZWRGxRVk9jczFBRjd4cFdYTU45ZFpQNFVNMW1nZEJhMlc1eUROT3N2UngtVzNWQkFhdGNqd3M");
   const capability = useSignal("");
+  const streams = useComputed(() => state.streams);
+  console.log(streams);
   const isButtonEnabled = useComputed(() => {
     return Boolean(streamId.value) && Boolean(capability.value);
   });
@@ -42,7 +44,7 @@ export function ReadSubpage(props: { stateFactory: () => ReadSubpageState }) {
           <div className="items-left mt-12 flex w-full flex-row justify-start">
             <div key={"main"} className="flex w-full flex-col">
               <>
-                <p className="text-1xl md:text-1xl mt-4 font-semibold">
+                {/* <p className="text-1xl md:text-1xl mt-4 font-semibold">
                   Stream ID
                 </p>
                 <TextareaAutosize
@@ -63,7 +65,37 @@ export function ReadSubpage(props: { stateFactory: () => ReadSubpageState }) {
                   onChange={(e) => {
                     capability.value = e.target.value;
                   }}
-                />
+                /> */}
+                {
+                  streams.value &&
+                  streams.value.length > 0 && (
+                    <div className="flex flex-col">
+                      <p className="text-1xl md:text-1xl mt-4 font-semibold">
+                        Authorized Streams
+                      </p>
+                      <div className="mt-4 flex flex-col space-y-4">
+                        {
+                          streams.value.map((stream) => (
+                            <div key={stream.stream} className="flex flex-row items-center justify-between">
+                              <p className="text-base">{stream.stream}</p>
+                              <Button
+                                className="text-xs"
+                                variant="secondary"
+                                onClick={() => {
+                                  streamIdString.value = stream.stream;
+                                  capability.value = stream.capability;
+                                  loadStream();
+                                }}
+                              >
+                                Load
+                              </Button>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    </div>
+                  )
+                }
                 {message.value ? (
                   <>
                     <p className="text-1xl md:text-1xl mt-4 font-semibold">

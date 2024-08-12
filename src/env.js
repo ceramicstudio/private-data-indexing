@@ -10,6 +10,19 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+      NEXTAUTH_SECRET:
+      process.env.NODE_ENV === "production"
+        ? z.string()
+        : z.string().optional(),
+    NEXTAUTH_URL: z.preprocess(
+      // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+      // Since NextAuth.js automatically uses the VERCEL_URL if present.
+      (str) => process.env.VERCEL_URL ?? str,
+      // VERCEL_URL doesn't include `https` so it cant be validated as a URL
+      process.env.VERCEL ? z.string() : z.string().url(),
+    ),
+      SPOTIFY_CLIENT_ID: z.string(),  
+      SPOTIFY_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -19,6 +32,9 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_PROJECT_ID: z.string(),
+    NEXT_PUBLIC_ENV_ID: z.string(),
+    NEXT_PUBLIC_TABLE_ID: z.string(),
+    NEXT_PUBLIC_CONTEXT_ID: z.string(),
   },
 
   /**
@@ -27,7 +43,14 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXT_PUBLIC_PROJECT_ID: process.env.NEXT_PUBLIC_PROJECT_ID,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
+    NEXT_PUBLIC_ENV_ID: process.env.NEXT_PUBLIC_ENV_ID,
+    NEXT_PUBLIC_TABLE_ID: process.env.NEXT_PUBLIC_TABLE_ID,
+    NEXT_PUBLIC_CONTEXT_ID: process.env.NEXT_PUBLIC_CONTEXT_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -12,11 +12,17 @@ import type { Cacao } from "@didtools/cacao";
 import { CARFactory } from "cartonne";
 import { type Signal, signal } from "@preact/signals-core";
 import { createJwsCacao } from "@/components/create-jws-cacao";
+import { type OrbisDB } from "@useorbis/db-sdk";
+import { env } from "@/env";
+
+const TABLE_ID = env.NEXT_PUBLIC_TABLE_ID as string;
+const CONTEXT_ID = env.NEXT_PUBLIC_CONTEXT_ID as string;
 
 type Underlying = {
   message: string | undefined;
   streamID: StreamID | undefined;
   capability: string | undefined;
+  orbisUpdate: Record<string, unknown> | undefined;
 };
 
 export class WriteSubpageState {
@@ -24,15 +30,22 @@ export class WriteSubpageState {
   private readonly endpoint: string;
   private readonly signal: Signal<Underlying>;
   private readonly carFactory: CARFactory;
+  private readonly orbis: OrbisDB;
 
-  constructor(session: DIDSession | undefined, endpoint: string) {
+  constructor(
+    session: DIDSession | undefined,
+    endpoint: string,
+    orbis: OrbisDB,
+  ) {
     this.session = session;
     this.endpoint = endpoint;
+    this.orbis = orbis;
     this.carFactory = new CARFactory();
     this.signal = signal<Underlying>({
       message: undefined,
       streamID: undefined,
       capability: undefined,
+      orbisUpdate: undefined,
     });
   }
 
@@ -42,6 +55,10 @@ export class WriteSubpageState {
 
   get capability(): string | undefined {
     return this.signal.value.capability;
+  }
+
+  get orbisUpdate(): Record<string, unknown> | undefined {  
+    return this.signal.value.orbisUpdate;
   }
 
   submitMessage(message: string): void {
@@ -55,6 +72,7 @@ export class WriteSubpageState {
     createEvent(session.did as unknown as DID, { message }, MODEL_STREAM_ID)
       .then(async (event) => {
         const car = eventToCAR(event.codec, event.signedEvent);
+        console.log(this.session);
         await writeToRecon(car, this.endpoint);
 
         const readCapabilityCAR = this.carFactory.build();
@@ -71,6 +89,7 @@ export class WriteSubpageState {
           message: message,
           streamID: streamID,
           capability: undefined,
+          orbisUpdate: undefined,
         };
       })
       .catch((error) => {
@@ -142,5 +161,48 @@ export class WriteSubpageState {
       .catch((error) => {
         console.error(error);
       });
+  }
+  async getSpotifyInfo(token: string): Promise<Record<string, unknown>> {
+    const request = await fetch(
+      "https://api.spotify.com/v1/me/top/tracks?offset=1&limit=1",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    const response = (await request.json()) as Record<string, unknown>;
+    return response;
+  }
+  async writeOrbis(
+    delegateeRaw: string,
+  ): Promise<Record<string, unknown> | undefined> {
+    try {
+      const current = this.signal.value;
+      const streamID = current.streamID;
+      if (!streamID) return;
+      const capability = current.capability;
+      if (!capability) return;
+      // construct the orbisDB query
+      await this.orbis.getConnectedUser();
+      const updatequery = await this.orbis
+        .insert(TABLE_ID)
+        .value({
+          topic: "Top Tracks",
+          stream: streamID.toString(),
+          capability,
+          delegatee: delegateeRaw.startsWith("0x")
+            ? `did:pkh:eip155:1:${delegateeRaw.toLowerCase()}`
+            : delegateeRaw.toLowerCase(),
+        })
+        .context(CONTEXT_ID)
+        .run();
+        this.signal.value = {
+          ...current,
+          orbisUpdate: updatequery,
+        };
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

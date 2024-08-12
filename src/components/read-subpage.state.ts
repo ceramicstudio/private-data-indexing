@@ -7,9 +7,23 @@ import { type Cacao } from "@didtools/cacao";
 import { createJwsCacao } from "@/components/create-jws-cacao";
 import { getEvent } from "@/components/services/stream";
 import * as DAG_JOSE from "dag-jose";
+import { type OrbisDB } from "@useorbis/db-sdk";
+import { env } from "@/env";
+
+const TABLE_ID = env.NEXT_PUBLIC_TABLE_ID as string;
+const CONTEXT_ID = env.NEXT_PUBLIC_CONTEXT_ID as string;
 
 type Underlying = {
   message: string | undefined;
+  streams:
+    | {
+        capability: string;
+        controller: string;
+        delegatee: string;
+        stream: string;
+        topic: string;
+      }[]
+    | undefined;
 };
 
 export class ReadSubpageState {
@@ -17,13 +31,20 @@ export class ReadSubpageState {
   private readonly endpoint: string;
   private readonly signal: Signal<Underlying>;
   private readonly carFactory: CARFactory;
+  private readonly orbis: OrbisDB;
 
-  constructor(session: DIDSession | undefined, endpoint: string) {
+  constructor(
+    session: DIDSession | undefined,
+    endpoint: string,
+    orbis: OrbisDB,
+  ) {
     this.session = session;
     this.endpoint = endpoint;
+    this.orbis = orbis;
     this.carFactory = new CARFactory();
     this.carFactory.codecs.add(DAG_JOSE);
-    this.signal = signal({ message: undefined });
+    this.signal = signal({ message: undefined, streams: undefined });
+    void this.loadAuthorizedStreams();
   }
 
   private async makeInvocationCapability(
@@ -98,6 +119,7 @@ export class ReadSubpageState {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const message = payload.data.message as string;
         this.signal.value = {
+          ...this.signal.value,
           message: message,
         };
       })
@@ -106,7 +128,38 @@ export class ReadSubpageState {
       });
   }
 
+  async loadAuthorizedStreams(): Promise<
+    | Promise<{
+        capability: string;
+        controller: string;
+        delegatee: string;
+        stream: string;
+        topic: string;
+      }>[]
+    | undefined
+  > {
+    const session = this.session;
+    if (!session) return;
+    await this.orbis.getConnectedUser();
+    const readQuery = await this.orbis
+      .select()
+      .from(TABLE_ID)
+      .where({ delegatee: session.did.parent })
+      .context(CONTEXT_ID)
+      .run();
+    console.log("loadAuthorizedStreams", readQuery);
+    if (readQuery.rows) {
+      this.signal.value = {
+        ...this.signal.value,
+        streams: readQuery.rows as Underlying["streams"],
+      };
+    }
+  }
+
   get message() {
     return this.signal.value.message;
+  }
+  get streams() {
+    return this.signal.value.streams;
   }
 }

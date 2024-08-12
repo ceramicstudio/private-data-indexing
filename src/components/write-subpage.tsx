@@ -2,13 +2,15 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { useSignal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
+import { useSession } from "next-auth/react";
 import type { WriteSubpageState } from "@/components/write-subpage.state";
 
 export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
   useSignals();
+  const { data: sessionData } = useSession();
   const message = useSignal("");
   const delegatee = useSignal("");
   const state = useMemo(() => props.stateFactory(), [props.stateFactory]);
@@ -29,6 +31,16 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
     e.preventDefault();
     state.submitMessage(message.value);
   };
+
+  useEffect(() => {
+    if (sessionData?.token.access_token) {
+      void state
+        .getSpotifyInfo(sessionData?.token.access_token)
+        .then((response) => {
+          message.value = JSON.stringify(response, null, 2);
+        });
+    }
+  }, [sessionData?.token.access_token]);
 
   return (
     <section className="relative h-full w-full border-b border-border bg-gradient-to-b from-background via-background via-90% to-transparent">
@@ -160,6 +172,24 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
                             Copied!
                           </span>
                         </button>
+                        {state.orbisUpdate == undefined ? (
+                          <Button
+                            className="mt-4 w-1/5 self-start text-xs"
+                            variant="secondary"
+                            onClick={() => {
+                              void state.writeOrbis(delegatee.value);
+                            }}
+                          >
+                            Save Capability
+                          </Button>
+                        ) : (
+                          <Button
+                            className="mt-4 w-1/5 self-start text-xs"
+                            variant="outline"
+                          >
+                            Created!
+                          </Button>
+                        )}
                       </div>
                     )}
                   </>
