@@ -77,7 +77,8 @@ export function ReadSubpage(props: { stateFactory: () => ReadSubpageState }) {
                         {
                           streams.value.map((stream) => (
                             <div key={stream.stream} className="flex flex-row items-center justify-between">
-                              <p className="text-base">{stream.stream}</p>
+                              <p className="text-base">Collection: {stream.topic}</p>
+                              <p className="text-base">User: {stream.controller}</p>
                               <Button
                                 className="text-xs"
                                 variant="secondary"
@@ -108,14 +109,15 @@ export function ReadSubpage(props: { stateFactory: () => ReadSubpageState }) {
                     />
                   </>
                 ) : (
-                  <Button
-                    className="mt-4 w-1/5 self-start text-xs"
-                    variant="secondary"
-                    disabled={!isButtonEnabled.value}
-                    onClick={loadStream}
-                  >
-                    Load
-                  </Button>
+                  // <Button
+                  //   className="mt-4 w-1/5 self-start text-xs"
+                  //   variant="secondary"
+                  //   disabled={!isButtonEnabled.value}
+                  //   onClick={loadStream}
+                  // >
+                  //   Load
+                  // </Button>
+                  <></>
                 )}
               </>
             </div>
