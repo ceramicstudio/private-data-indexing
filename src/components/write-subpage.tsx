@@ -12,7 +12,7 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
   useSignals();
   const { data: sessionData } = useSession();
   const message = useSignal("");
-  const delegatee = useSignal("");
+  const delegatee = useSignal("0xcc2158d7e1B0FffD4dB6F51E35f05E00d8fE30b2");
   const state = useMemo(() => props.stateFactory(), [props.stateFactory]);
 
   function copyToClipboard(value: string | undefined): void {
@@ -50,11 +50,11 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
             <div key={"main"} className="flex w-full flex-col">
               <>
                 <p className="text-1xl md:text-1xl mt-4 font-semibold">
-                  Message
+                  Spotify Data
                 </p>
                 <TextareaAutosize
                   className="outline-dark mt-4 min-h-24 resize-none border border-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your message here..."
+                  placeholder="Your top tracks will automatically appear here..."
                   value={message.value}
                   onChange={(e) => {
                     message.value = e.target.value;
@@ -65,7 +65,7 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
                   variant="secondary"
                   onClick={submitMessage}
                 >
-                  Create
+                  Save to Private Data Store
                 </Button>
 
                 {state.streamId && (
@@ -114,7 +114,7 @@ export function WriteSubpage(props: { stateFactory: () => WriteSubpageState }) {
                     </div>
                     <>
                       <p className="text-1xl md:text-1xl mt-12 mt-4 font-semibold">
-                        Delegate read access to
+                        The following account wants to access your Spotify data:
                       </p>
                       <TextareaAutosize
                         className="outline-dark mt-4 min-h-12 resize-none border border-gray-800 text-base focus:outline-none focus:ring-2 focus:ring-blue-500"

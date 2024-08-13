@@ -8,7 +8,7 @@ import type { WalletClient } from "viem";
 import { useAccount, useWalletClient } from "wagmi";
 import { useEffect, useMemo } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { env} from "@/env";
+import { env } from "@/env";
 
 const ENV_ID = env.NEXT_PUBLIC_ENV_ID as string;
 
@@ -53,7 +53,7 @@ export class SessionState {
   }
 
   logIn(walletClient: GetWalletClientResult | undefined): void {
-    if (!walletClient){
+    if (!walletClient) {
       localStorage.removeItem("ceramic:session");
       localStorage.removeItem("orbis:session");
       return;
@@ -74,7 +74,14 @@ export class SessionState {
         if (storedSession) {
           session = storedSession;
           unSerializedSession = await DIDSession.fromSession(session);
-          if (unSerializedSession.isExpired) {
+          const parentAddress = unSerializedSession.did.parent.replace(
+            "did:pkh:eip155:1:",
+            "",
+          );
+          const isOtherAddress =
+            parentAddress.toLowerCase() !== accountId.address.toLowerCase();
+          console.log("isOtherAddress", isOtherAddress);
+          if (unSerializedSession.isExpired || isOtherAddress) {
             // @ts-expect-error - known type error
             unSerializedSession = await DIDSession.authorize(authMethod, {
               resources: [
