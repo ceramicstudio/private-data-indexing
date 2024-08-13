@@ -4,6 +4,12 @@ This demo application uses a minimal webapp to demonstrate how Ceramic can facil
 
 As an add-on, this version also shows how those capabilities can be saved to Ceramic via OrbisDB, and programmatically queried if a matching authorized account has relevant capabilities they can access from other accounts.
 
+## Flow
+
+<p align="center" width="100%">
+    <img width="75%" src="public/flow.png">
+</p>
+
 ## Getting Started
 
 1. First, create a copy of the [example env file](.env.example) and rename it `.env` in the root of this directory.
